@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Head from "./Components/Head";
 import MidContent from "./Components/MidContent";
-// import sun from "./Components/Images/sun.svg";
+import BottomContent from "./Components/BottomContent";
 
 function App() {
   const [feelsLike, setFeelsLike] = useState("");
@@ -22,11 +22,7 @@ function App() {
   const [visibility, setVisibility] = useState("");
   const [uvindex, setUvindex] = useState("");
 
-  const [hourList, setHourList] = useState([]);
-  const [weatherType, setWeatherType] = useState("");
-  const [hourlyChanceofRain, setHourlyChanceofRain] = useState("");
-  const [hourlyHumidity, setHourlyHumidity] = useState("");
-  const [hourlyTemperature, setHourlyTemperature] = useState("");
+  const [hourlyForecastReport, setHourlyForcastReport] = useState([]);
 
   const [inputLocation, setInputLocation] = useState("london");
 
@@ -62,12 +58,10 @@ function App() {
         setVisibility(response.current.vis_km);
         setPressure(response.current.pressure_mb);
         setPrecipitation(response.current.precip_mm);
-        setHourList(response.forecast.forecastday[0].hour);
-
-        // console.log(response);
+        setHourlyForcastReport(response.forecast.forecastday[0].hour);
       })
       .catch(function (err) {
-        alert(err);
+        alert("Invalid Location " + err);
       });
   }
   const weatherUpdateObject = {
@@ -90,17 +84,22 @@ function App() {
     uvindex,
   };
 
-  const hourlyReport = {
-    hourlyHumidity,
-    hourlyTemperature,
-    hourlyChanceofRain,
-    weatherType,
-  };
-
   return (
     <div className="container">
       <Head locationInput={locationInput}></Head>
       <MidContent weatherUpdates={weatherUpdateObject}></MidContent>
+      <div className="bottomContent">
+        <div className="titleHead">
+          <p>TIME</p>
+          <p>CHANCE OF RAIN</p>
+          <p>HUMIDITY</p>
+          <p>TEMPERATURE</p>
+        </div>
+        {hourlyForecastReport.map((data) => (
+          <BottomContent data={data}></BottomContent>
+        ))}
+        <p></p>
+      </div>
     </div>
   );
 }
