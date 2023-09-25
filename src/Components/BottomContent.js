@@ -20,7 +20,11 @@ const BottomContent = (props) => {
           <img src={imageSource} alt="weather"></img>
         </div>
         <div className="forecastElement">{props.data.humidity}%</div>
-        <div className="forecastElement">{props.data.temp_c}°</div>
+        {props.fahrenheitSwitch ? (
+          <div className="forecastElement">{props.data.temp_f}°</div>
+        ) : (
+          <div className="forecastElement">{props.data.temp_c}°</div>
+        )}
       </div>
     </div>
   );

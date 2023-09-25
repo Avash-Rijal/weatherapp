@@ -1,10 +1,19 @@
 import { useState } from "react";
 import logo from "./Images/logo.svg";
+
 const Head = (props) => {
   const [locationName, setLocationName] = useState("");
+  const [setFahrenheit, setSetFahrenheit] = useState(true); // Use useState for setFahrenheit
+
   const handleInput = (e) => {
     e.preventDefault();
     props.locationInput(locationName);
+  };
+
+  const handleSwitch = () => {
+    console.log(setFahrenheit);
+    setSetFahrenheit(!setFahrenheit); // Use setState to update setFahrenheit
+    props.fahrenheitSwitch(setFahrenheit);
   };
 
   return (
@@ -27,9 +36,13 @@ const Head = (props) => {
       </div>
       <div style={{ fontSize: "larger", fontWeight: "bolder" }}>
         <p>°C | °F</p>
-        <label class="switch">
-          <input type="checkbox" />
-          <span class="slider round"></span>
+        <label className="switch">
+          <input
+            type="checkbox"
+            checked={!setFahrenheit}
+            onChange={handleSwitch}
+          />
+          <span className="slider round"></span>
         </label>
       </div>
     </div>

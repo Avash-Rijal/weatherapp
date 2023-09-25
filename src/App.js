@@ -4,6 +4,7 @@ import MidContent from "./Components/MidContent";
 import BottomContent from "./Components/BottomContent";
 
 function App() {
+  const [tempInF, setTempInF] = useState(false);
   const [feelsLike, setFeelsLike] = useState("");
   const [humidity, setHumidity] = useState("");
   const [chanceofRain, setChanceofRain] = useState("");
@@ -26,6 +27,10 @@ function App() {
 
   const [inputLocation, setInputLocation] = useState("london");
 
+  const fahrenheitSwitch = (setFahrenheit) => {
+    setTempInF(setFahrenheit);
+  };
+
   const locationInput = (locationName) => {
     setInputLocation(locationName);
   };
@@ -39,19 +44,28 @@ function App() {
         return response.json();
       })
       .then(function (response) {
-        setFeelsLike(response.current.feelslike_c);
         setHumidity(response.current.humidity);
         setChanceofRain(
           response.forecast.forecastday[0].day.daily_chance_of_rain
         );
+        if (tempInF) {
+          setTempreature(response.current.temp_f);
+          setTodayLow(response.forecast.forecastday[0].day.mintemp_f);
+          setTodayHigh(response.forecast.forecastday[0].day.maxtemp_f);
+          setFeelsLike(response.current.feelslike_f);
+        } else {
+          setTempreature(response.current.temp_c);
+          setTodayLow(response.forecast.forecastday[0].day.mintemp_c);
+          setTodayHigh(response.forecast.forecastday[0].day.maxtemp_c);
+          setFeelsLike(response.current.feelslike_c);
+        }
         setWindSpeed(response.current.wind_kph);
-        setTempreature(response.current.temp_c);
+
         setWeather(response.current.condition.text);
         setDayNight(response.current.is_day);
         setCityName(response.location.name);
         setDateTime(response.location.localtime);
-        setTodayLow(response.forecast.forecastday[0].day.mintemp_c);
-        setTodayHigh(response.forecast.forecastday[0].day.maxtemp_c);
+
         setSunRise(response.forecast.forecastday[0].astro.sunrise);
         setSunSet(response.forecast.forecastday[0].astro.sunset);
         setUvindex(response.forecast.forecastday[0].day.uv);
@@ -86,7 +100,10 @@ function App() {
 
   return (
     <div className="container">
-      <Head locationInput={locationInput}></Head>
+      <Head
+        locationInput={locationInput}
+        fahrenheitSwitch={fahrenheitSwitch}
+      ></Head>
       <MidContent weatherUpdates={weatherUpdateObject}></MidContent>
       <div className="bottomContent">
         <div className="titleHead">
@@ -96,7 +113,7 @@ function App() {
           <p>TEMPERATURE</p>
         </div>
         {hourlyForecastReport.map((data) => (
-          <BottomContent data={data}></BottomContent>
+          <BottomContent data={data} fahrenheitSwitch={tempInF}></BottomContent>
         ))}
         <p></p>
       </div>
